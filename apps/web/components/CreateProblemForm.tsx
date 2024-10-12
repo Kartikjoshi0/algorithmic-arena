@@ -1,19 +1,20 @@
-'use client'
+// @ts-nocheck
 "use client";
+
 import React, { useState } from "react";
 import axios from "axios";
 import { Input } from "@repo/ui/input";
 import { Textarea } from "@repo/ui/textarea";
 import { Button } from "@repo/ui/button";
-
+import MDEditor from "@uiw/react-md-editor";
 const CreateProblemForm = () => {
   const [problemName, setProblemName] = useState("");
   const [functionName, setFunctionName] = useState("");
   const [inputFields, setInputFields] = useState([{ type: "", name: "" }]);
   const [outputFields, setOutputFields] = useState([{ type: "", name: "" }]);
   const [testCases, setTestCases] = useState([{ input: [], output: "" }]);
-  const [problemDescription, setProblemDescription] = useState("");
-
+  // const [problemDescription, setProblemDescription] = useState("");
+  const [value, setValue] = React.useState("**Hello world!!!**");
   // Add Input Field
   const addInputField = () => {
     setInputFields([...inputFields, { type: "", name: "" }]);
@@ -39,7 +40,7 @@ const CreateProblemForm = () => {
         inputFields,
         outputFields,
         testCases,
-        problemDescription,
+        value,
       };
 
       const response = await axios.post("/api/problems/create", payload);
@@ -50,7 +51,10 @@ const CreateProblemForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8 grid md:grid-cols-2 gap-6">
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-8 grid md:grid-cols-2 gap-6"
+    >
       {/* Problem Name */}
       <div className="md:col-span-2">
         <label>Problem Name</label>
@@ -144,9 +148,12 @@ const CreateProblemForm = () => {
           <div key={index} className="flex gap-4 mb-4">
             <Input
               placeholder="Test Input (array format)"
-              value={testCase.input.join(', ')}
+              value={testCase.input.join(", ")}
               onChange={(e) => {
-                const inputArray = e.target.value.split(',').map(num => Number(num.trim())).filter(num => !isNaN(num));
+                const inputArray = e.target.value
+                  .split(",")
+                  .map((num) => Number(num.trim()))
+                  .filter((num) => !isNaN(num));
                 const newTestCases = [...testCases];
                 newTestCases[index].input = inputArray; // Set as array of numbers
                 setTestCases(newTestCases);
@@ -171,7 +178,13 @@ const CreateProblemForm = () => {
       </div>
 
       {/* Problem Description */}
-      <div className="md:col-span-2">
+
+      <div className="container md:col-span-2 h-16">
+        <MDEditor value={value} onChange={setValue} />
+        <MDEditor.Markdown source={value} style={{ whiteSpace: "pre-wrap" }} />
+      </div>
+
+      {/* <div className="md:col-span-2">
         <label>Problem Description</label>
         <Textarea
           placeholder="Problem Description"
@@ -179,10 +192,10 @@ const CreateProblemForm = () => {
           onChange={(e) => setProblemDescription(e.target.value)}
           required
         />
-      </div>
+      </div> */}
 
       {/* Submit Button */}
-      <div className="md:col-span-2">
+      <div className="md:col-span-2 pt-28">
         <Button type="submit">Create Problem</Button>
       </div>
     </form>
