@@ -27,11 +27,16 @@ interface CreateProblemRequestBody {
 
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
-
- 
-  // if (!session) {
-  //   return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
-  // }
+  if (!session || session.user.role !== "ADMIN") {
+    return NextResponse.json(
+      {
+        message: "You must be an admin to create contests",
+      },
+      {
+        status: 401,
+      }
+    );
+  }
 
   try {
     const body = await req.json();
@@ -44,8 +49,6 @@ export async function POST(req: NextRequest) {
       problemDescription,
       problemMarkdown,
     } = body as CreateProblemRequestBody;
-
-    // Validate required fields
     if (!problemName || !inputFields || !outputFields || !functionName) {
       return NextResponse.json({ message: 'Missing required fields' }, { status: 400 });
     }
@@ -60,11 +63,7 @@ export async function POST(req: NextRequest) {
       functionName,  
       inputFields,   
       outputFields,  
-    };
-
-    
-    console.log("problemData before calling createProblem:", JSON.stringify(problemData, null, 2));
-    
+    };    
     const problem = await createProblem(problemData); 
 
     

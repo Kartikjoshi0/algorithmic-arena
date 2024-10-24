@@ -32,16 +32,16 @@ const CLOUDFLARE_TURNSTILE_URL =
   
       
       const isAllowed = await rateLimit(userId, 1, 10);
-      // if (!isAllowed && process.env.NODE_ENV === "production") {
-      //   return NextResponse.json(
-      //     {
-      //       message: `Too many requests. Please wait before submitting again.`,
-      //     },
-      //     {
-      //       status: 429,
-      //     }
-      //   );
-      // }
+      if (!isAllowed && process.env.NODE_ENV === "production") {
+        return NextResponse.json(
+          {
+            message: `Too many requests. Please wait before submitting again.`,
+          },
+          {
+            status: 429,
+          }
+        );
+      }
   
       const submissionInput = SubmissionInput.safeParse(await req.json());
       if (!submissionInput.success) {

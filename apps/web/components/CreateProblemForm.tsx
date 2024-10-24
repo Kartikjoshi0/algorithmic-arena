@@ -81,7 +81,6 @@ const CreateProblemForm = () => {
       };
 
       const response = await axios.post("/api/problem/create", payload);
-      console.log("Problem Created:", response.data);
     } catch (error) {
       console.error("Error creating problem:", error);
     }
