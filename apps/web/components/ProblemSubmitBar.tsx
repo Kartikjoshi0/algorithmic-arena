@@ -25,7 +25,7 @@ import { Turnstile } from "@marsidev/react-turnstile";
 
 const TURNSTILE_SITE_KEY =
   process.env.NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY ||
-  "0x4AAAAAAAc4qhUEsytXspC_";
+  "";
 
 enum SubmitStatus {
   SUBMIT = "SUBMIT",
